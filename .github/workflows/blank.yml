@@ -1,36 +1,68 @@
-# This is a basic workflow to help you get started with Actions
+# 워크플로우 이름
+name: Deploy to GitHub Pages
 
-name: CI
-
-# Controls when the workflow will run
+# 언제 워크플로우를 실행할지 제어
 on:
-  # Triggers the workflow on push or pull request events but only for the "main" branch
+  # "main" 브랜치에 push 이벤트가 발생했을 때 실행
   push:
     branches: [ "main" ]
-  pull_request:
-    branches: [ "main" ]
-
-  # Allows you to run this workflow manually from the Actions tab
+  # Actions 탭에서 수동으로 이 워크플로우를 실행할 수 있도록 허용
   workflow_dispatch:
 
-# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+# 워크플로우에 배포를 위한 권한 설정
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# 동시성 설정: 같은 브랜치에 대한 새로운 워크플로우 실행 시 이전 실행은 취소
+concurrency:
+  group: "pages"
+  cancel-in-progress: true
+
+# 하나의 워크플로우는 순차적 또는 병렬적으로 실행될 수 있는 하나 이상의 작업(job)으로 구성됨
 jobs:
-  # This workflow contains a single job called "build"
-  build:
-    # The type of runner that the job will run on
+  # 이 워크플로우는 "deploy"라는 단일 작업을 포함
+  deploy:
+    # GitHub Pages 배포를 위한 환경 설정
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    # 작업이 실행될 러너(runner)의 종류
     runs-on: ubuntu-latest
-
-    # Steps represent a sequence of tasks that will be executed as part of the job
+    # 단계(steps)는 작업의 일부로 실행될 일련의 작업들을 나타냄
     steps:
-      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
-      - uses: actions/checkout@v4
+      # $GITHUB_WORKSPACE 아래에 리포지토리를 체크아웃하여 작업이 접근할 수 있도록 함
+      - name: Checkout
+        uses: actions/checkout@v4
 
-      # Runs a single command using the runners shell
-      - name: Run a one-line script
-        run: echo Hello, world!
+      # GitHub Pages 액션을 위한 설정
+      - name: Setup Pages
+        uses: actions/configure-pages@v5
 
-      # Runs a set of commands using the runners shell
-      - name: Run a multi-line script
+      # ❗️ 프로젝트 빌드 단계 (필요 시 수정)
+      # React, Vue, Svelte 등 빌드 과정이 필요한 경우 여기에 빌드 명령어를 추가합니다.
+      # 예: npm run build
+      # 단순 HTML/CSS/JS 프로젝트는 이 단계가 필요 없을 수 있습니다.
+      # 아래는 빌드 결과물이 'build' 폴더에 생성된다고 가정한 예시입니다.
+      - name: Build project
         run: |
-          echo Add other actions to build,
-          echo test, and deploy your project.
+          echo "빌드 과정이 필요하면 여기에 명령어를 작성하세요."
+          # 예시: npm ci && npm run build
+          # 단순 HTML을 위해서는 배포할 파일들을 특정 폴더로 옮기기만 해도 됩니다.
+          # 예를 들어, 프로젝트 루트에 있는 모든 파일을 './_site' 폴더로 복사
+          mkdir ./_site
+          cp -r ./* ./_site
+
+      # Pages 배포를 위해 빌드 결과물을 아티팩트(artifact)로 업로드
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          # 업로드할 폴더를 지정합니다.
+          # 위 'Build project' 단계에서 생성된 폴더 경로와 일치해야 합니다.
+          path: './_site'
+
+      # 아티팩트를 GitHub Pages에 배포
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
