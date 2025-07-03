@@ -1,188 +1,259 @@
-<!CIDOCTYPE html>
+<!DOCTYPE html>
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sentinel I28 기능 테스트 진행 보고서</title>
+    <title>CMMS 도입을 위한 기준정보 준비 가이드</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/fonts-archive/Paperlogy/subsets/Paperlogy-dynamic-subset.css" type="text/css"/>
     <style>
         body {
             font-family: "Paperlogy", -apple-system, BlinkMacSystemFont, "Segoe UI",Roboto, Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
-            background-color: #ffffff; /* 메인배경 */
-            color: #000000; /* 메인 텍스트 */
-        }
-        .kpi-card {
-            background-color: #f9fafb; /* 연한 회색 배경으로 변경 */
-            border: 1px solid #e5e7eb;
-            border-radius: 1rem;
-            padding: 2rem;
-            text-align: center;
-            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.05), 0 2px 4px -2px rgb(0 0 0 / 0.05);
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-        }
-        .kpi-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.05), 0 4px 6px -4px rgb(0 0 0 / 0.05);
-        }
-        .section-title {
-            font-size: 2.5rem;
-            font-weight: 900;
-            margin-bottom: 1rem;
+            background-color: #ffffff;
             color: #000000;
         }
-        .section-subtitle {
-            font-size: 1.25rem;
-            color: #4b5563; /* 조금 더 어두운 회색 */
-            max-width: 800px;
-            margin: 0 auto 2.5rem auto;
-        }
         .content-card {
-             background-color: #f9fafb;
-             border: 1px solid #e5e7eb;
-             border-radius: 1rem;
-             padding: 1.5rem;
+            background-color: white;
+            border-radius: 0.5rem;
+            padding: 2rem;
+            border: 1px solid #e5e7eb;
         }
-        .status-fail {
-            color: #dc2626; /* 빨간색 */
+        .nav-link {
+            transition: all 0.3s ease;
+            color: #000000;
         }
-        .status-pending {
-            color: #f59e0b; /* 주황색 */
+        .nav-link.active, .nav-link:hover {
+            background-color: #000000;
+            color: #ffffff;
         }
-        .accordion-button span:last-child {
-            transition: transform 0.3s ease;
+        .content-section {
+            scroll-margin-top: 80px;
         }
-        .accordion-button.open span:last-child {
-            transform: rotate(180deg);
+        code {
+            background-color: #f3f4f6;
+            color: #111827;
+            padding: 0.25rem 0.5rem;
+            border-radius: 0.25rem;
+            font-weight: 600;
         }
-        .accordion-content {
-            background-color: #f9fafb;
-            border-top: 1px solid #e5e7eb;
+        .example-table {
+            border: 1px solid #e5e7eb;
+            padding: 1rem;
+            border-radius: 0.5rem;
+        }
+        .example-table-title {
+            font-weight: bold;
+            text-align: center;
+            margin-bottom: 0.5rem;
+            border-bottom: 1px solid #e5e7eb;
+            padding-bottom: 0.5rem;
+        }
+        .example-table-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.25rem 0;
+        }
+        .example-table-button {
+            font-size: 0.75rem;
+            background-color: #f3f4f6;
+            padding: 0.25rem 0.5rem;
+            border-radius: 0.25rem;
+            border: 1px solid #e5e7eb;
         }
     </style>
 </head>
 <body class="antialiased">
 
-    <header class="bg-gray-50 py-20 text-center border-b border-gray-200">
-        <div class="container mx-auto px-6">
-            <h1 class="text-5xl md:text-7xl font-black text-black leading-tight">Sentinel I28 기능 테스트 보고서</h1>
-            <p class="text-xl text-gray-600 mt-4 max-w-3xl mx-auto">장비의 주요 기능 안정성 및 정확도 검증 테스트 진행 상황 요약. 환경 변화 보정(EDC) 및 압력 보정 기능 테스트 결과와 향후 계획을 다룹니다.</p>
+    <div class="relative min-h-screen">
+        <div class="md:hidden flex justify-between items-center p-4 bg-white/90 backdrop-blur-sm sticky top-0 z-20 border-b">
+            <h1 class="text-xl font-bold text-black">기준정보 준비 가이드</h1>
+            <button id="mobile-menu-button" class="text-black focus:outline-none">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path></svg>
+            </button>
         </div>
-    </header>
 
-    <main class="container mx-auto px-6 py-16">
+        <div id="sidebar" class="bg-white text-black w-64 space-y-2 py-7 px-2 fixed inset-y-0 left-0 transform -translate-x-full md:translate-x-0 transition duration-200 ease-in-out z-30 border-r border-gray-200 md:h-screen md:overflow-y-auto">
+            <a href="#" class="block px-4 py-2.5 text-2xl font-bold">준비 가이드</a>
+            <nav id="main-nav">
+                <a href="#overview" class="nav-link block px-4 py-2.5 rounded-lg font-medium">개요</a>
+                <a href="#step1" class="nav-link block px-4 py-2.5 rounded-lg font-medium">1단계: 위치 기준정보</a>
+                <a href="#step2" class="nav-link block px-4 py-2.5 rounded-lg font-medium">2단계: 설비 분류</a>
+                <a href="#step3" class="nav-link block px-4 py-2.5 rounded-lg font-medium">3단계: 통합 코드 완성</a>
+            </nav>
+        </div>
 
-        <section id="summary" class="text-center mb-24">
-            <h2 class="section-title">테스트 진행 현황</h2>
-            <p class="section-subtitle">2025년 7월 3일 기준, 핵심 보정 기능에 대한 테스트를 진행했습니다. 일부 기능에서 설정값 최적화가 필요한 문제가 발견되어 '실패'로 잠정 결론 내렸습니다.</p>
-            
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-16">
-                <div class="kpi-card">
-                    <h3 class="text-xl font-bold text-black">환경 변화 보정 (EDC)</h3>
-                    <p class="text-5xl font-extrabold status-fail mt-2">실패</p>
-                    <p class="text-md text-gray-500 mt-2">2025-07-03</p>
-                </div>
-                <div class="kpi-card">
-                    <h3 class="text-xl font-bold text-black">압력 보정 (Pressure Correction)</h3>
-                    <p class="text-5xl font-extrabold status-fail mt-2">실패</p>
-                     <p class="text-md text-gray-500 mt-2">2025-07-03</p>
-                </div>
-                 <div class="kpi-card">
-                    <h3 class="text-xl font-bold text-black">배치 교정 (Batch Calibration)</h3>
-                    <p class="text-5xl font-extrabold status-pending mt-2">예정</p>
-                     <p class="text-md text-gray-500 mt-2">2025-07-04</p>
-                </div>
-            </div>
-        </section>
-        
-        <section id="details" class="text-center">
-            <h2 class="section-title">세부 테스트 결과 및 계획</h2>
-            <p class="section-subtitle">각 기능별 테스트 상세 내용, 발견된 문제점 및 향후 조치 계획입니다. 각 항목을 클릭하여 자세한 내용을 확인하세요.</p>
-            <div class="max-w-4xl mx-auto">
-                 <div class="outlook-card border border-gray-200 rounded-lg space-y-2 mb-4">
-                    <button class="accordion-button w-full text-left p-4 font-bold text-xl flex justify-between items-center" data-target="edc-content">
-                        <span>1. 환경 변화 보정 (EDC) 기능 테스트</span>
-                        <span class="transform transition-transform duration-300">▼</span>
-                    </button>
-                    <div id="edc-content" class="accordion-content hidden px-6 pb-6 text-left text-gray-700">
-                        <h4 class="font-bold text-lg mt-4 mb-2">기능 설명</h4>
-                        <p class="mb-4">테스트 환경의 점진적 변화로 인한 결과 편차를 동적으로 보상하여 시스템 교정 상태를 정밀하게 유지합니다. 누설 없는 마스터 부품을 기준으로 허용 변동 범위를 설정하고, 양품들의 이동 평균을 계산하여 모든 테스트 결과를 보정합니다.</p>
-                        <h4 class="font-bold text-lg mt-4 mb-2">테스트 결과: <strong class="status-fail">실패</strong></h4>
-                        <ul class="list-disc list-inside space-y-2">
-                            <li><strong>문제점:</strong> 테스트 중 측정값이 예상 범위를 지속적으로 벗어나는 현상 발생.</li>
-                            <li><strong>추정 원인:</strong> 설정된 'EDC Percentage' 또는 'EDC Quantity' 값이 현재 테스트 환경 및 부품과 부합하지 않을 가능성.</li>
-                        </ul>
-                        <h4 class="font-bold text-lg mt-4 mb-2">향후 조치 계획</h4>
-                         <ul class="list-disc list-inside space-y-1">
-                            <li>관련 파라미터 재검토 및 조정 후 재테스트 진행</li>
-                            <li>제조사 매뉴얼을 참고하여 기능 초기화 조건 재확인</li>
-                        </ul>
+        <main class="flex-1 p-4 sm:p-6 lg:p-10 text-black md:ml-64">
+            <section id="overview" class="content-section mb-16">
+                <h2 class="text-4xl font-bold mb-4">CMMS 도입을 위한 기준정보 준비 가이드</h2>
+                <p class="text-lg leading-relaxed">
+                    성공적인 CMMS(설비관리 시스템) 도입의 가장 중요한 첫걸음은 모든 설비를 식별하고 관리하기 위한 기준 정보를 명확하게 정의하고 표준화하는 것입니다. 이 가이드는 제공된 자료를 바탕으로 효과적인 기준정보 체계를 수립하는 방안을 단계별로 안내합니다.
+                </p>
+            </section>
+
+            <section id="step1" class="content-section mb-16">
+                <h2 class="text-3xl font-bold mb-6">1단계: 설비 계층 구조 및 위치 기준정보 정의</h2>
+                <p class="mb-8 text-md leading-relaxed">가장 먼저 해야 할 일은 설비가 어디에 있는지, 즉 <strong>물리적인 위치</strong>를 체계적으로 정의하는 것입니다. 이는 모든 설비 코드의 기반이 되며, 향후 위치별 데이터 분석의 핵심 요소가 됩니다.</p>
+                
+                <div class="content-card mb-8">
+                    <h3 class="text-xl font-bold mb-4">1. 계층적 위치 구조 수립</h3>
+                    <p class="mb-4">위치는 상하위 관계를 갖는 계층 구조로 정의해야 합니다. 예를 들어, '공장'이라는 최상위 위치 아래 '라인'이 있고, '라인' 아래에 '공정'이 있는 구조입니다.</p>
+                    <ul class="list-disc list-inside space-y-2 mb-6">
+                        <li><strong>Level 1: 공장 (Factory)</strong> - 가장 상위 레벨로, 전체 사업장을 구분합니다. (예: 1공장, 2공장)</li>
+                        <li><strong>Level 2: 라인 (Line)</strong> - 각 공장 내의 주요 생산 라인 또는 구역을 의미합니다. (예: 1라인, 2라인)</li>
+                        <li><strong>Level 3: 공정 (Process/Area)</strong> - 라인 내의 세부 공정 또는 작업 구역을 나타냅니다. (예: A공정, B공정, 콤프레셔실)</li>
+                    </ul>
+                    
+                    <h4 class="text-lg font-bold mt-8 mb-4">위치 기준정보 등록 예시</h4>
+                    <div class="grid md:grid-cols-3 gap-6">
+                        <div class="example-table">
+                            <h5 class="example-table-title">공장</h5>
+                            <ul class="space-y-2">
+                                <li class="example-table-item"><span>1공장</span> <button class="example-table-button">변경</button></li>
+                                <li class="example-table-item"><span>2공장</span> <button class="example-table-button">변경</button></li>
+                                <li class="example-table-item"><span>3공장</span> <button class="example-table-button">변경</button></li>
+                            </ul>
+                        </div>
+                        <div class="example-table">
+                            <h5 class="example-table-title">라인</h5>
+                            <ul class="space-y-2">
+                                <li class="example-table-item"><span>[1공장] 1라인</span> <button class="example-table-button">변경</button></li>
+                                <li class="example-table-item"><span>[1공장] 2라인</span> <button class="example-table-button">변경</button></li>
+                                <li class="example-table-item"><span>[2공장] 3라인</span> <button class="example-table-button">변경</button></li>
+                            </ul>
+                        </div>
+                        <div class="example-table">
+                            <h5 class="example-table-title">공정</h5>
+                            <ul class="space-y-2">
+                                <li class="example-table-item"><span>[1라인] A공정</span> <button class="example-table-button">변경</button></li>
+                                <li class="example-table-item"><span>[1라인] B공정</span> <button class="example-table-button">변경</button></li>
+                                <li class="example-table-item"><span>[2라인] 1차 드라이어</span> <button class="example-table-button">변경</button></li>
+                            </ul>
+                        </div>
                     </div>
                 </div>
-                <div class="outlook-card border border-gray-200 rounded-lg space-y-2 mb-4">
-                    <button class="accordion-button w-full text-left p-4 font-bold text-xl flex justify-between items-center" data-target="pressure-content">
-                        <span>2. 압력 보정 (Pressure Correction) 기능 테스트</span>
-                        <span class="transform transition-transform duration-300">▼</span>
-                    </button>
-                    <div id="pressure-content" class="accordion-content hidden px-6 pb-6 text-left text-gray-700">
-                        <h4 class="font-bold text-lg mt-4 mb-2">기능 설명</h4>
-                        <p class="mb-4">다양한 테스트에서 측정된 압력 값을 보정하여 결과의 정확도를 향상시킵니다. 테스트 중 발생 가능한 미세 압력 변동 요인을 보정하지만, 특정 환경에서는 비활성화가 필요할 수 있습니다.</p>
-                        <h4 class="font-bold text-lg mt-4 mb-2">테스트 결과: <strong class="status-fail">실패</strong></h4>
-                        <ul class="list-disc list-inside space-y-2">
-                            <li><strong>문제점:</strong> 기능 활성화 시 오히려 측정값의 편차가 증가하는 경향 확인.</li>
-                            <li><strong>추정 원인:</strong> 현재 테스트 프로그램의 특성과 보정 기능 간의 충돌 가능성.</li>
-                        </ul>
-                        <h4 class="font-bold text-lg mt-4 mb-2">향후 조치 계획</h4>
-                         <ul class="list-disc list-inside space-y-1">
-                            <li>기능 비활성화 상태 데이터와 비교 분석하여 문제 원인 파악</li>
-                            <li>특정 테스트 유형에 대한 기능 적용 권장 사항을 매뉴얼에서 재확인</li>
-                        </ul>
+
+                <div class="content-card">
+                    <h3 class="text-xl font-bold mb-4">2. 위치 코드 부여</h3>
+                    <p>정의된 위치 계층에 따라 일관된 규칙으로 코드를 부여합니다.</p>
+                    <p class="mt-2"><strong>예시:</strong> '1공장 1라인 A공정'에 위치한 설비의 위치 코드는 <code>1A-A</code> 또는 <code>1L-AP</code> 와 같이 직관적으로 생성할 수 있습니다. `CMMS 품번체계` 파일의 <code>A1-INJ</code> (아산 1공장-사출공정)와 같은 방식입니다.</p>
+                </div>
+            </section>
+
+            <section id="step2" class="content-section mb-16">
+                <h2 class="text-3xl font-bold mb-6">2단계: 설비 분류 기준정보 정의</h2>
+                <p class="mb-8 text-md leading-relaxed">다음으로, 관리하고자 하는 모든 설비를 <strong>종류별로 분류</strong>하고, 각 분류에 대한 기준 정보를 만들어야 합니다. 이는 어떤 종류의 설비인지 명확히 식별하기 위함입니다.</p>
+
+                <div class="content-card mb-8">
+                    <h3 class="text-xl font-bold mb-4">1. 설비 대분류 (설비군)</h3>
+                    <p class="mb-4">설비의 특성에 따라 큰 그룹으로 나눕니다.</p>
+                     <ul class="list-disc list-inside space-y-2 mb-6">
+                        <li><strong>제조 설비:</strong> 직접적으로 생산 활동에 사용되는 설비 (예: 일반사출, 이중사출)</li>
+                        <li><strong>유틸리티 설비:</strong> 생산 활동을 지원하는 부대 설비 (예: 콤프레셔, 질소발생기)</li>
+                    </ul>
+                    
+                    <h4 class="text-lg font-bold mt-8 mb-4">설비군 등록 예시</h4>
+                    <div class="grid md:grid-cols-2 gap-6">
+                        <div class="example-table">
+                            <h5 class="example-table-title">제조 설비군</h5>
+                            <ul class="space-y-2">
+                                <li class="example-table-item"><span>일반사출</span> <button class="example-table-button">수정</button></li>
+                                <li class="example-table-item"><span>이중사출</span> <button class="example-table-button">수정</button></li>
+                            </ul>
+                        </div>
+                        <div class="example-table">
+                            <h5 class="example-table-title">유틸리티 설비군</h5>
+                            <ul class="space-y-2">
+                                <li class="example-table-item"><span>콤프레셔</span> <button class="example-table-button">수정</button></li>
+                                <li class="example-table-item"><span>질소발생기</span> <button class="example-table-button">수정</button></li>
+                            </ul>
+                        </div>
                     </div>
                 </div>
-                 <div class="outlook-card border border-gray-200 rounded-lg space-y-2">
-                    <button class="accordion-button w-full text-left p-4 font-bold text-xl flex justify-between items-center" data-target="batch-content">
-                        <span>3. 배치 교정 (Batch Calibration) 기능 테스트 (예정)</span>
-                        <span class="transform transition-transform duration-300">▼</span>
-                    </button>
-                    <div id="batch-content" class="accordion-content hidden px-6 pb-6 text-left text-gray-700">
-                        <h4 class="font-bold text-lg mt-4 mb-2">기능 설명</h4>
-                        <p class="mb-4">여러 번의 연속적인 교정을 수행하고 결과의 평균값을 최종 교정 값으로 사용하여 정확도와 신뢰성을 높입니다. 단일 교정 시 발생할 수 있는 우발적 오차를 최소화합니다.</p>
-                        <h4 class="font-bold text-lg mt-4 mb-2">설정 방법</h4>
-                        <ul class="list-disc list-inside space-y-1">
-                            <li><strong>Batch Layout:</strong> 교정 방식 설정 (교대 또는 그룹)</li>
-                            <li><strong>Batch Quantity:</strong> 총 교정 횟수 설정 (2 ~ 25회)</li>
-                            <li><strong>Average Quantity:</strong> 평균 계산에 사용할 데이터 수 설정</li>
-                        </ul>
-                        <h4 class="font-bold text-lg mt-4 mb-2">사전 준비사항 (2025-07-04)</h4>
-                         <ul class="list-disc list-inside space-y-1">
-                            <li>테스트용 마스터 부품 및 리크 스탠다드 점검</li>
-                            <li>'Batch Layout' 설정에 따른 테스트 절차 사전 숙지</li>
-                        </ul>
-                    </div>
+
+                <div class="content-card">
+                    <h3 class="text-xl font-bold mb-4">2. 설비 분류 코드 부여</h3>
+                    <p class="mb-4">`CMMS 품번체계` 파일의 내용처럼, 각 설비 종류에 대해 직관적인 영문 약어로 된 분류 코드를 부여합니다. 이러한 표준 코드는 누가 보더라도 설비의 종류를 쉽게 파악할 수 있게 해줍니다.</p>
+                    <ul class="list-disc list-inside space-y-2">
+                        <li><strong>일반사출기:</strong> <code>IMM</code> (Injection Molding Machine)</li>
+                        <li><strong>이중사출기:</strong> <code>DIM</code> (Dual Injection Machine)</li>
+                        <li><strong>콤프레셔:</strong> <code>CMP</code> (Compressor)</li>
+                        <li><strong>헬륨 리크 검사기:</strong> <code>HLT</code> (Helium Leak Tester)</li>
+                    </ul>
                 </div>
-            </div>
-        </section>
-    </main>
-    
-    <footer class="text-center py-8 mt-16 bg-gray-100 border-t border-gray-200">
-        <p class="text-gray-500">출처: Sentinel I28 기능 테스트 진행 보고서</p>
-    </footer>
+            </section>
+
+            <section id="step3" class="content-section">
+                <h2 class="text-3xl font-bold mb-6">3단계: 통합 설비 코드 체계 완성</h2>
+                <p class="mb-8 text-md leading-relaxed">마지막으로, 1단계와 2단계에서 정의한 <strong>위치 코드</strong>와 <strong>설비 분류 코드</strong>를 조합하여 각 설비에 대한 고유한 최종 코드를 생성합니다.</p>
+                <div class="content-card">
+                    <h3 class="text-xl font-bold mb-4">추천 코드 구조: <code>[위치 코드] - [설비 분류 코드] - [일련번호]</code></h3>
+                    <ul class="list-disc list-inside space-y-2 mb-6">
+                        <li><strong>위치 코드:</strong> 1단계에서 정의한 설비의 물리적 위치 (예: <code>A1-INJ</code>)</li>
+                        <li><strong>설비 분류 코드:</strong> 2단계에서 정의한 설비의 종류 (예: <code>IMM</code>)</li>
+                        <li><strong>일련번호:</strong> 동일한 위치에 동일한 종류의 설비가 여러 대 있을 경우, 3자리 숫자로 부여 (예: <code>001</code>, <code>002</code>)</li>
+                    </ul>
+                    <h3 class="text-xl font-bold mb-4 mt-8">최종 코드 생성 예시</h3>
+                    <div class="bg-gray-100 p-4 rounded-lg">
+                        <p class="text-md"><strong>상황:</strong> 아산 1공장 사출 공정에 있는 5번째 일반사출기</p>
+                        <p class="text-xl font-bold mt-2"><code>A1-INJ-IMM-005</code></p>
+                    </div>
+                    <p class="mt-6">이러한 체계적인 코드 부여 방식은 CMMS 시스템 내에서 데이터를 정확하게 입력하고, 향후 유지보수 이력, 비용 등을 체계적으로 분석하고 추적하는 데 필수적입니다.</p>
+                </div>
+            </section>
+        </main>
+    </div>
 
 <script>
 document.addEventListener('DOMContentLoaded', () => {
-    // Accordion
-    const accordionButtons = document.querySelectorAll('.accordion-button');
-    if (accordionButtons.length > 0) {
-        accordionButtons.forEach(button => {
-            button.addEventListener('click', () => {
-                const targetId = button.dataset.target;
-                const content = document.getElementById(targetId);
-                
-                if (content) {
-                    button.classList.toggle('open');
-                    content.classList.toggle('hidden');
+    // Smooth scrolling & active nav link
+    const navLinks = document.querySelectorAll('#main-nav a');
+    const sections = document.querySelectorAll('.content-section');
+
+    function changeNav() {
+        let index = sections.length;
+        const scrollOffset = window.innerHeight / 2;
+        while(--index && window.scrollY + scrollOffset < sections[index].offsetTop) {}
+        
+        navLinks.forEach((link) => link.classList.remove('active'));
+        if(index >= 0 && navLinks[index]) {
+            navLinks[index].classList.add('active');
+        } else if (window.scrollY < sections[0].offsetTop) {
+            navLinks[0].classList.add('active');
+        }
+    }
+    
+    if (navLinks.length > 0 && sections.length > 0) {
+        navLinks.forEach(link => {
+            link.addEventListener('click', function(e) {
+                e.preventDefault();
+                const targetId = this.getAttribute('href');
+                const targetSection = document.querySelector(targetId);
+                if(targetSection){
+                        window.scrollTo({
+                            top: targetSection.offsetTop - 70, 
+                            behavior: 'smooth'
+                        });
                 }
+                 if(window.innerWidth < 768) {
+                     const sidebar = document.getElementById('sidebar');
+                     if (sidebar) {
+                         sidebar.classList.add('-translate-x-full');
+                     }
+                 }
             });
+        });
+
+        window.addEventListener('scroll', changeNav);
+        changeNav();
+    }
+    
+    // Mobile menu toggle
+    const mobileMenuButton = document.getElementById('mobile-menu-button');
+    const sidebar = document.getElementById('sidebar');
+    if(mobileMenuButton && sidebar){
+        mobileMenuButton.addEventListener('click', () => {
+            sidebar.classList.toggle('-translate-x-full');
         });
     }
 });
